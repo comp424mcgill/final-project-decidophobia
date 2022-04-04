@@ -447,9 +447,21 @@ class World:
         sleep(self.display_delay)
 
 
+    def get_legal_actions(self):
+        """
+        get all valid actions of a player
+        Returns
+        -------
+        list of ((x, y), dir)
+        """
+        pass
+
+
 if __name__ == "__main__":
     world = World()
     is_end, p0_score, p1_score = world.step()
     while not is_end:
         is_end, p0_score, p1_score = world.step()
     print(p0_score, p1_score)
+
+
