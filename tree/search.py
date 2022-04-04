@@ -3,10 +3,9 @@ class MonteCarloTreeSearch(object):
 
     def __init__(self, node):
         """
-        MonteCarloTreeSearchNode
         Parameters
         ----------
-        node : mctspy.tree.nodes.MonteCarloTreeSearchNode
+        node : MonteCarloTreeSearchNode
         """
         self.root = node
 
@@ -31,13 +30,13 @@ class MonteCarloTreeSearch(object):
             end_time = time.time() + total_simulation_seconds
             while time.time() < end_time:
                 v = self._tree_policy()
-                reward = v.rollout()
-                v.backpropagate(reward)
+                _, p0_score, p1_score = v.rollout()
+                v.backpropagate(p0_score, p1_score)
         else :
             for _ in range(0, simulations_number):
                 v = self._tree_policy()
-                reward = v.rollout()
-                v.backpropagate(reward)
+                _, p0_score, p1_score = v.rollout()
+                v.backpropagate(p0_score, p1_score)
         # to select best child go for exploitation only
         return self.root.best_child(c_param=0.)
 
