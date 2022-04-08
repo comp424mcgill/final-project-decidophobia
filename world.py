@@ -29,7 +29,6 @@ class World:
     ):
         """
         Initialize the game world
-
         Parameters
         ----------
         player_1: str
@@ -163,7 +162,6 @@ class World:
     def get_current_player(self):
         """
         Get the positions of the current player
-
         Returns
         -------
         tuple of (current_player_obj, current_player_pos, adversary_player_pos)
@@ -176,7 +174,6 @@ class World:
     def update_player_time(self, time_taken):
         """
         Update the time taken by the player
-
         Parameters
         ----------
         time_taken : float
@@ -192,7 +189,6 @@ class World:
         Take a step in the game world.
         Runs the agents' step function and update the game board accordingly.
         If the agents' step function raises an exception, the step will be replaced by a Random Walk.
-
         Returns
         -------
         results: tuple
@@ -275,7 +271,6 @@ class World:
     def check_valid_step(self, start_pos, end_pos, barrier_dir):
         """
         Check if the step the agent takes is valid (reachable and within max steps).
-
         Parameters
         ----------
         start_pos : tuple
@@ -323,7 +318,6 @@ class World:
     def check_endgame(self):
         """
         Check if the game ends and compute the current score of the agents.
-
         Returns
         -------
         is_endgame : bool
@@ -400,7 +394,6 @@ class World:
     def random_walk(self, my_pos, adv_pos):
         """
         Randomly walk to the next position in the board.
-
         Parameters
         ----------
         my_pos : tuple
@@ -447,57 +440,10 @@ class World:
         sleep(self.display_delay)
 
 
-    # def get_legal_actions(self):
-    #     """
-    #     get all valid actions of a player
-    #     Returns
-    #     -------
-    #     list of ((x, y), dir)
-    #     """
-    #
-    #     cur_player, cur_pos, adv_pos = self.get_current_player()
-    #     all_coor = list()
-    #     legal_move = list()
-    #     for i in range(self.board_size):
-    #         for j in range(self.board_size):
-    #             all_coor.append((i,j))
-    #     direction = [0,1,2,3]
-    #
-    #     for pos in all_coor:
-    #         if not self.check_boundary(pos):
-    #             all_coor.remove(pos)
-    #     for pos in all_coor:
-    #         for d in direction:
-    #             next_pos = np.asarray(pos, dtype=cur_pos.dtype)
-    #             if self.check_valid_step(cur_pos, next_pos, d):
-    #                 legal_move.append((pos,d))
-    #
-    #     return legal_move
-
-    # update world
-    def update_world(self, next_pos, dir):
-        start_time = time()
-        self.update_player_time(time() - start_time)
-        next_pos = np.asarray(next_pos)
-        if not self.turn:
-            self.p0_pos = next_pos
-        else:
-            self.p1_pos = next_pos
-        # Set the barrier to True
-        r, c = next_pos
-        self.set_barrier(r, c, dir)
-
-        # Change turn
-        self.turn = 1 - self.turn
-        return self
-
-
-
 if __name__ == "__main__":
     world = World()
     is_end, p0_score, p1_score = world.step()
     while not is_end:
         is_end, p0_score, p1_score = world.step()
     print(p0_score, p1_score)
-
-
+    
