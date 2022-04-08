@@ -18,6 +18,7 @@ class StudentAgent(Agent):
 
     def __init__(self):
         super(StudentAgent, self).__init__()
+        self.autoplay = True
         self.name = "StudentAgent"
         self.dir_map = {
             "u": 0,
