@@ -41,9 +41,7 @@ class StudentAgent(Agent):
         start = time.time()
         board_size = len(chess_board)
         my_world = MyWorld(board_size, chess_board, max_step, my_pos, adv_pos)
-        # foo = my_world.get_legal_actions()
-        # bar = my_world.random_walk(my_pos, adv_pos)
-        # x = 1
+
 
         root = MonteCarloTreeSearchNode(state=my_world)
         selected_node = root.best_action()

@@ -446,4 +446,3 @@ if __name__ == "__main__":
     while not is_end:
         is_end, p0_score, p1_score = world.step()
     print(p0_score, p1_score)
-    
