@@ -38,16 +38,17 @@ class StudentAgent(Agent):
         where (x, y) is the next position of your agent and dir is the direction of the wall
         you want to put on.
         """
-        start = time.time()
+        # start = time.time()
         board_size = len(chess_board)
         my_world = MyWorld(board_size, chess_board, max_step, my_pos, adv_pos)
 
 
         root = MonteCarloTreeSearchNode(state=my_world)
+
         selected_node = root.best_action()
         # dummy return
         pos, dir = selected_node.parent_action
-        print(time.time() - start)
+        # print(time.time() - start)
         return pos, dir
 
 
@@ -93,10 +94,13 @@ class MyWorld:
         r, c = end_pos
         if self.chess_board[r, c, barrier_dir]:
             return False
+        if np.array_equal(start_pos, end_pos):
+            return True
 
         # Get position of the adversary
         adv_pos = self.p1_pos
-
+        if np.array_equal(end_pos, np.asarray(self.p1_pos)):
+            return False
         # BFS
         state_queue = [(start_pos, 0)]
         visited = {tuple(start_pos)}
@@ -170,28 +174,11 @@ class MyWorld:
         p1_score = list(father.values()).count(p1_r)
         if p0_r == p1_r:
             return False, p0_score, p1_score
-        player_win = None
-        win_blocks = -1
-        if p0_score > p1_score:
-            player_win = 0
-            win_blocks = p0_score
-        elif p0_score < p1_score:
-            player_win = 1
-            win_blocks = p1_score
-        else:
-            player_win = -1  # Tie
         return True, p0_score, p1_score
 
     def check_boundary(self, pos):
         r, c = pos
         return 0 <= r < self.board_size and 0 <= c < self.board_size
-
-    # def set_barrier(self, r, c, dir):
-    #     # Set the barrier to True
-    #     self.chess_board[r, c, dir] = True
-    #     # Set the opposite barrier to True
-    #     move = self.moves[dir]
-    #     self.chess_board[r + move[0], c + move[1], self.opposites[dir]] = True
 
     def random_walk(self, my_pos, adv_pos):
         """
@@ -244,30 +231,40 @@ class MyWorld:
         -------
         list of ((x, y), dir)
         """
-
-        # cur_player, cur_pos, adv_pos = self.get_current_player()
-
-        cur_pos = self.p0_pos
-        # adv_pos = self.p1_pos
-
-        all_coor = list()
         legal_move = list()
+        direction = [0, 1, 2, 3]
+        # all_coor = np.empty((self.board_size, self.board_size))
         for i in range(self.board_size):
             for j in range(self.board_size):
-                all_coor.append((i, j))
-        direction = [0, 1, 2, 3]
+                if abs(i - self.p0_pos[0]) + abs(j - self.p1_pos[1]) > self.max_step:
+                    continue
 
-        for pos in all_coor:
-
-            if abs(pos[0] - self.p0_pos[0]) + abs(pos[1] - self.p1_pos[1]) > self.max_step:
-                continue
-
-            for d in direction:
-                next_pos = np.asarray(pos)
-                if self.check_valid_step(np.asarray(cur_pos), next_pos, d):
-                    legal_move.append((pos, d))
+                for d in direction:
+                    next_pos = np.asarray((i, j))
+                    if self.check_valid_step(np.asarray(self.p0_pos), next_pos, d):
+                        legal_move.append(((i, j), d))
 
         return legal_move
+
+        # cur_pos = self.p0_pos
+        # all_coor = list()
+        # legal_move = list()
+        # for i in range(self.board_size):
+        #     for j in range(self.board_size):
+        #         all_coor.append((i, j))
+        # direction = [0, 1, 2, 3]
+        #
+        # for pos in all_coor:
+        #
+        #     if abs(pos[0] - self.p0_pos[0]) + abs(pos[1] - self.p1_pos[1]) > self.max_step:
+        #         continue
+        #
+        #     for d in direction:
+        #         next_pos = np.asarray(pos)
+        #         if self.check_valid_step(np.asarray(cur_pos), next_pos, d):
+        #             legal_move.append((pos, d))
+        #
+        # return legal_move
 
     def move(self, player, next_pos, dir):
         next_pos = np.asarray(next_pos)
@@ -306,22 +303,6 @@ class MyWorld:
         else:
             return 1
 
-    # update world
-    # def update_world(self, next_pos, dir):
-    #     start_time = time()
-    #     self.update_player_time(time() - start_time)
-    #     next_pos = np.asarray(next_pos)
-    #     if not self.turn:
-    #         self.p0_pos = next_pos
-    #     else:
-    #         self.p1_pos = next_pos
-    #     # Set the barrier to True
-    #     r, c = next_pos
-    #     self.set_barrier(r, c, dir)
-    #
-    #     # Change turn
-    #     self.turn = 1 - self.turn
-    #     return self
 
 
 class MonteCarloTreeSearchNode:
@@ -394,13 +375,8 @@ class MonteCarloTreeSearchNode:
     def best_child(self, c_param=0.1):
         choices_weights = [(c.q() / c.n()) + c_param * np.sqrt((2 * np.log(self.n()) / c.n())) for c in self.children]
         if len(choices_weights) == 0:
-            print("!!!!!!!!!!!!!!!!!!!!!!")
+            return None
         return self.children[np.argmax(choices_weights)]
-
-    def rollout_policy(self, possible_moves):
-
-        # play randomly
-        return possible_moves[np.random.randint(len(possible_moves))]
 
     def _tree_policy(self):
 
@@ -414,7 +390,7 @@ class MonteCarloTreeSearchNode:
         return current_node
 
     def best_action(self):
-        simulation_time = 2.2 - 0.05 * self.state.board_size
+        simulation_time = 2. - 0.05 * self.state.board_size
 
         end =time.time() + simulation_time
 
