@@ -346,7 +346,7 @@ class MonteCarloTreeSearchNode:
 
     def rollout(self):
         current_rollout_state = self.state
-        player_turn = True
+        player_turn = False
 
         while not current_rollout_state.is_game_over():
             # possible_moves = current_rollout_state.get_legal_actions()
