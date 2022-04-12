@@ -29,7 +29,6 @@ class World:
     ):
         """
         Initialize the game world
-
         Parameters
         ----------
         player_1: str
@@ -163,7 +162,6 @@ class World:
     def get_current_player(self):
         """
         Get the positions of the current player
-
         Returns
         -------
         tuple of (current_player_obj, current_player_pos, adversary_player_pos)
@@ -176,7 +174,6 @@ class World:
     def update_player_time(self, time_taken):
         """
         Update the time taken by the player
-
         Parameters
         ----------
         time_taken : float
@@ -192,7 +189,6 @@ class World:
         Take a step in the game world.
         Runs the agents' step function and update the game board accordingly.
         If the agents' step function raises an exception, the step will be replaced by a Random Walk.
-
         Returns
         -------
         results: tuple
@@ -275,7 +271,6 @@ class World:
     def check_valid_step(self, start_pos, end_pos, barrier_dir):
         """
         Check if the step the agent takes is valid (reachable and within max steps).
-
         Parameters
         ----------
         start_pos : tuple
@@ -323,7 +318,6 @@ class World:
     def check_endgame(self):
         """
         Check if the game ends and compute the current score of the agents.
-
         Returns
         -------
         is_endgame : bool
@@ -400,7 +394,6 @@ class World:
     def random_walk(self, my_pos, adv_pos):
         """
         Randomly walk to the next position in the board.
-
         Parameters
         ----------
         my_pos : tuple
